@@ -1,0 +1,311 @@
+schema: spec-driven
+
+context: |
+  # MFE E-Commerce Learning Platform
+
+  ## Domain
+  E-commerce application built as microfrontends for learning purposes.
+  Developed entirely by AI using OpenSpec workflow.
+
+  ## Tech Stack
+  - Monorepo: Turborepo + pnpm workspaces
+  - Bundler: Rsbuild
+  - Runtime Integration: Module Federation v2 (@module-federation/rsbuild-plugin)
+  - Language: TypeScript (strict)
+  - UI Framework: React 19
+  - Routing: React Router v7 (host owns BrowserRouter, MFEs use relative routes)
+  - State Management: Zustand (shared singleton via MF shared config)
+  - Server State: TanStack Query (React Query)
+  - Form Handling: React Hook Form + Zod
+  - Styling: Tailwind CSS v4 (CSS-first @theme config)
+  - Component Library: shadcn/ui (in shared packages/ui)
+  - Backend: Express (minimal, in-memory data store)
+  - Package scope: @mfe/*
+
+  ## Folder Structure
+  mfe-goal-practical/
+  ├── apps/
+  │   ├── host/                      ← Shell app (Rsbuild + MF consumer)
+  │   │   ├── src/
+  │   │   │   ├── App.tsx            ← BrowserRouter + route config
+  │   │   │   ├── routes/            ← route definitions + lazy imports
+  │   │   │   ├── components/        ← shell layout, nav, auth guard
+  │   │   │   └── index.tsx          ← entry point
+  │   │   ├── rsbuild.config.ts
+  │   │   ├── module-federation.config.ts
+  │   │   ├── tsconfig.json
+  │   │   └── package.json
+  │   │
+  │   ├── storefront/                ← Products + Cart MFE (Rsbuild + MF provider)
+  │   │   ├── src/
+  │   │   │   ├── App.tsx            ← exports route-ready component
+  │   │   │   ├── pages/             ← ProductList, ProductDetail, Cart
+  │   │   │   ├── components/        ← domain-specific components
+  │   │   │   ├── hooks/             ← useProducts, useCart (TanStack Query)
+  │   │   │   └── index.tsx
+  │   │   ├── rsbuild.config.ts
+  │   │   ├── module-federation.config.ts
+  │   │   └── package.json
+  │   │
+  │   ├── account/                   ← Auth + Account + Orders MFE (Rsbuild + MF provider)
+  │   │   ├── src/
+  │   │   │   ├── App.tsx
+  │   │   │   ├── pages/             ← Login, Register, Profile, Orders
+  │   │   │   ├── components/
+  │   │   │   ├── hooks/             ← useAuth, useOrders
+  │   │   │   └── index.tsx
+  │   │   ├── rsbuild.config.ts
+  │   │   ├── module-federation.config.ts
+  │   │   └── package.json
+  │   │
+  │   └── backend/                   ← Express API server
+  │       ├── src/
+  │       │   ├── index.ts           ← Express app
+  │       │   ├── routes/            ← auth, products, cart, orders
+  │       │   ├── middleware/        ← auth middleware (JWT verify)
+  │       │   ├── data/              ← in-memory store / seed data
+  │       │   └── types.ts
+  │       ├── tsconfig.json
+  │       └── package.json
+  │
+  ├── packages/
+  │   ├── api/                       ← Shared API layer
+  │   │   ├── src/
+  │   │   │   ├── client.ts          ← axios instance, interceptors
+  │   │   │   ├── queries/           ← TanStack Query key factories + hooks
+  │   │   │   │   ├── products.ts
+  │   │   │   │   ├── cart.ts
+  │   │   │   │   ├── orders.ts
+  │   │   │   │   └── auth.ts
+  │   │   │   └── index.ts
+  │   │   ├── tsconfig.json
+  │   │   └── package.json           ← @mfe/api
+  │   │
+  │   ├── store/                     ← Shared Zustand store
+  │   │   ├── src/
+  │   │   │   ├── index.ts           ← createStore + combined slices
+  │   │   │   ├── slices/
+  │   │   │   │   ├── auth.ts        ← { isAuthenticated, user, login, logout }
+  │   │   │   │   └── cart.ts        ← { items, itemCount, addItem, removeItem }
+  │   │   │   └── types.ts
+  │   │   ├── tsconfig.json
+  │   │   └── package.json           ← @mfe/store
+  │   │
+  │   ├── ui/                        ← shadcn-based design system
+  │   │   ├── src/
+  │   │   │   ├── components/        ← Button, Card, Input, etc.
+  │   │   │   ├── lib/
+  │   │   │   │   └── utils.ts       ← cn() helper
+  │   │   │   └── index.ts
+  │   │   ├── tailwind.css           ← @theme tokens
+  │   │   ├── tsconfig.json
+  │   │   └── package.json           ← @mfe/ui
+  │   │
+  │   ├── shared/                    ← Types, constants, utils
+  │   │   ├── src/
+  │   │   │   ├── types/             ← Product, User, Order, CartItem
+  │   │   │   ├── constants.ts       ← API_URL, routes
+  │   │   │   └── utils.ts           ← formatCurrency, etc.
+  │   │   ├── tsconfig.json
+  │   │   └── package.json           ← @mfe/shared
+  │   │
+  │   └── tsconfig/                  ← Shared TS configs
+  │       ├── base.json
+  │       ├── react.json
+  │       ├── node.json
+  │       └── package.json           ← @mfe/tsconfig
+  │
+  ├── turbo.json                     ← Task pipeline
+  ├── pnpm-workspace.yaml            ← Workspace definition
+  ├── package.json                   ← Root (delegates to turbo)
+  ├── .gitignore
+  └── openspec/                      ← Change management (already exists)
+
+  ## Architecture Decisions
+
+  ### ADR-001: MFE Boundaries (3 apps, expand later)
+  - host: Shell app — BrowserRouter, layout, nav, auth guards, route-level lazy loading of remotes
+  - storefront: Products + Cart domain (Rsbuild + MF provider)
+  - account: Auth + Profile + Settings + Orders domain (Rsbuild + MF provider)
+  - backend: Express API server (not an MFE)
+  - Decision: Start with 3 MFEs. Split storefront→products+cart and account→auth+account+orders when complexity demands it.
+
+  ### ADR-002: State Management Strategy
+  - Global state (Zustand @mfe/store singleton): ONLY auth { isAuthenticated, user } and cart { itemCount }
+  - Server state (TanStack Query): All API data — products, cart contents, orders, auth /me
+  - Local state (React useState): Form inputs, UI toggles, modals, search/filter, pagination
+  - NEVER put server-fetched data in Zustand
+  - NEVER put form state in Zustand
+  - NEVER put JWT token in Zustand (httpOnly cookie)
+
+  ### ADR-003: Authentication Strategy
+  - JWT stored in httpOnly cookies (set by Express backend)
+  - Token sent automatically with every request (withCredentials: true)
+  - Zustand auth slice holds { isAuthenticated, user } — NOT the token
+  - API package (axios interceptor) handles 401 → redirect to login
+  - Backend owns /auth/login, /auth/register, /auth/logout, /auth/me
+
+  ### ADR-004: Routing Pattern
+  - Host owns BrowserRouter (single router instance)
+  - MFEs export route-ready components (not full apps with own routers)
+  - Host lazy-loads MFE components at route boundaries via React.lazy + Suspense
+  - MFEs use relative <Routes> internally
+  - react-router shared as singleton via MF config
+
+  ### ADR-005: MF Shared Singleton Strategy
+  - All MFE apps share these as singletons via MF shared config:
+    react, react-dom, react-router, zustand, @mfe/store, @mfe/api
+  - This ensures one React instance, one router, one store, one query client
+  - @mfe/store and @mfe/api are build-time packages AND runtime singletons
+
+  ### ADR-006: API Layer Design
+  - packages/api: shared axios instance with interceptors + TanStack Query key factories + hooks
+  - axios instance: withCredentials: true (for httpOnly cookies), base URL config, 401 interceptor
+  - Query keys follow factory pattern (e.g., productKeys.list(filters), cartKeys.detail())
+  - Mutations invalidate related queries on success
+  - All MFEs import from @mfe/api — no direct axios usage in MFE code
+
+  ### ADR-007: Design System
+  - packages/ui: shadcn-based component library with Tailwind CSS v4
+  - Semantic color tokens via @theme (bg-primary, text-muted-foreground)
+  - Follow shadcn composition rules (Field/FieldGroup for forms, cn() for conditionals)
+  - MFE-specific components stay in the MFE; only shared/reusable components in packages/ui
+
+  ### ADR-008: Form Handling Strategy
+  - React Hook Form + Zod for all forms
+  - Zod schemas live in packages/shared/src/schemas/ (single source of truth)
+  - Schemas reused for: client-side validation (zodResolver), server-side validation (zod .parse()), TypeScript types (z.infer<>)
+  - Form components are local to each MFE (not shared — different layouts per domain)
+  - Form state is local (React Hook Form manages it, never Zustand)
+
+  ### ADR-009: Communication Patterns
+  - Shared store singleton: auth & cart state (@mfe/store via MF singleton)
+  - Callback props: when remote MFE needs host action (e.g., navigate)
+  - URL routing: page-level MFE loading (host routes to MFE components)
+  - Shared API layer: all MFEs use @mfe/api for data fetching
+  - SessionStorage: complex data across page navigations (escape hatch, use sparingly)
+  - Principle: share as little state as possible, only genuinely global state
+
+  ### ADR-010: Integration Pattern
+  - Build-time packages: packages/* consumed via pnpm workspace:* (shared utilities, types, UI)
+  - Module Federation: runtime integration for MFE loading (storefront, account remotes)
+  - Runtime lazy loading: React.lazy + Suspense at route boundaries
+
+  ## Folder Structure
+  - apps/: host, storefront, account, backend
+  - packages/: api, store, ui, shared, tsconfig
+  - Package naming: @mfe/api, @mfe/store, @mfe/ui, @mfe/shared, @mfe/tsconfig
+
+  ## Dev Server Ports
+  - host: 3000 (MF consumer)
+  - storefront: 3001 (MF provider, manifest at http://localhost:3001/mf-manifest.json)
+  - account: 3002 (MF provider, manifest at http://localhost:3002/mf-manifest.json)
+  - backend: 3003 (Express API)
+
+  ## Agent Skills (.agents/skills/)
+  
+  IMPORTANT: Always read the relevant SKILL.md before implementing anything in that domain.
+  Multiple skills may apply to a single task — load all relevant ones.
+
+  ### turborepo (ALWAYS for monorepo work)
+  When: Setting up or modifying turbo.json, pnpm-workspace.yaml, creating packages,
+  configuring task pipelines, caching, filtering, CI, dev workflows, package boundaries.
+  Applies to: monorepo-foundation, any change touching turbo.json or package structure.
+  Key rules: NEVER put task logic in root package.json (delegate to turbo run),
+  always use "turbo run" in scripts/CI (not shorthand "turbo build"),
+  declare workspace deps for ^build to work.
+
+  ### mf (Module Federation — ALWAYS for MF config)
+  When: Configuring module-federation.config.ts, shared deps, remotes/exposes,
+  debugging MF runtime errors, type generation (@mf-types), MF performance/HMR.
+  Applies to: host, storefront, account — any app with module-federation.config.ts.
+  Sub-skills: integrate (setup), shared-deps (singleton config), config-check,
+  runtime-error (debugging), bridge-check, type-check, perf.
+  Key: Use "mf integrate" for initial MF setup on each app;
+  use "mf shared-deps" when configuring shared singletons.
+
+  ### shadcn (ALWAYS for UI components)
+  When: Adding shadcn components to packages/ui, composing UI in any MFE,
+  building forms, working with component variants, styling components.
+  Applies to: packages/ui, and all MFE apps that consume @mfe/ui.
+  Key rules: Use FieldGroup+Field for forms (never raw div), use cn() for conditionals,
+  use semantic colors (bg-primary, never bg-blue-500), use data-icon on icons in buttons,
+  always include AvatarFallback, Title required on Dialog/Sheet/Drawer.
+
+  ### tailwind-design-system (ALWAYS for styling/theming)
+  When: Setting up Tailwind v4 @theme tokens in packages/ui, configuring design tokens,
+  building responsive layouts, creating component variants, dark mode setup.
+  Applies to: packages/ui (tailwind.css with @theme), all apps consuming the design system.
+  Key: Tailwind v4 uses CSS-first config (@import "tailwindcss" + @theme in CSS),
+  NOT tailwind.config.ts. Use OKLCH color space for tokens.
+
+  ### tanstack-query-best-practices (ALWAYS for data fetching)
+  When: Creating query hooks in packages/api/src/queries/*, implementing mutations,
+  configuring QueryClient, setting up caching strategies, prefetching, error handling.
+  Applies to: packages/api, and all MFE code that fetches server data.
+  Key rules: Always use array query keys, use factory pattern for key organization,
+  always invalidate related queries after mutations, implement optimistic updates
+  for responsive UI, use select for data transformation, set appropriate staleTime.
+
+  ### zustand (ALWAYS for store work)
+  When: Creating or modifying Zustand slices in packages/store, defining actions,
+  implementing optimistic updates in store, managing global state.
+  Applies to: packages/store (auth slice, cart slice).
+  Key rules: Public actions use verb form (setAuth, clearAuth), internal actions
+  use internal_ prefix, use reducer pattern for complex state transitions,
+  use simple set() for booleans/simple values. Remember: store holds ONLY
+  auth + cart — server data belongs in TanStack Query.
+
+  ### vercel-react-best-practices (ALWAYS for React components)
+  When: Writing any React component, reviewing performance, optimizing bundle size,
+  eliminating fetch waterfalls, reducing re-renders, lazy loading.
+  Applies to: ALL React code across all apps and packages/ui.
+  Key rules: Use Promise.all for independent async ops, check cheap conditions
+  before awaiting, import directly (avoid barrel file re-exports where perf matters),
+  use Suspense boundaries for streaming, minimize re-renders via composition.
+
+  ### vercel-composition-patterns (When building reusable components)
+  When: Designing component APIs in packages/ui, refactoring components with many
+  boolean props, building compound components, using context providers, creating
+  flexible component libraries.
+  Applies to: packages/ui, and complex MFE components (e.g., ProductCard, CartItem).
+  Key: Avoid boolean prop proliferation — use composition/compound components instead.
+
+  ### typescript-advanced-types (When building type infrastructure)
+  When: Creating shared types in packages/shared/src/types/, building type-safe
+  API client in packages/api, creating generic utility types, designing type-safe
+  store slices, Zod schema type inference (z.infer<>).
+  Applies to: packages/shared, packages/api, packages/store, any complex type work.
+  Key: Use generics for reusable factories, conditional types for API response
+  types, mapped types for form schemas, template literals for route paths.
+
+  ### vercel-react-view-transitions (OPTIONAL — integration-polish phase)
+  When: Adding page transitions between MFE routes, animating route changes,
+  shared element animations (e.g., product card → product detail).
+  Applies to: host (route transitions), storefront (product list → detail).
+  NOTE: Requires react@canary (not stable React 19). Evaluate during
+  integration-polish phase. Skip if staying on stable React 19.
+  Use only if the team decides to adopt canary for view transitions.
+
+  ### vercel-microfrontends (REFERENCE ONLY — not our primary pattern)
+  When: Considering deployment strategy, comparing MF-based MFE approach with
+  Vercel multi-zone approach, thinking about path-based routing between projects.
+  NOTE: We use Module Federation v2 for runtime integration, NOT Vercel multi-zones.
+  This skill describes Vercel's @vercel/microfrontends / microfrontends.json approach.
+  Useful as conceptual reference for routing patterns and deployment topology,
+  but NOT the implementation pattern for this project.
+
+rules:
+  proposal:
+    - Always include a "Non-goals" section
+    - Reference relevant ADRs from config context
+    - List which agent skills apply to this change under a "Skills" section
+  design:
+    - Include ASCII diagrams for data flows
+    - Specify which package/app owns each piece
+    - Reference specific skill rules when making design choices (e.g., "per tanstack-query qk-factory-pattern")
+  tasks:
+    - Break tasks into chunks of max 2 hours
+    - Each task should be independently testable
+    - Specify the target app or package for each task
+    - Include a "Skills to load" note on each task listing which SKILL.md files to read before starting
