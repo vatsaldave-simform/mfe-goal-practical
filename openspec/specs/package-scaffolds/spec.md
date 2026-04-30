@@ -20,11 +20,11 @@ The `packages/tsconfig` package SHALL provide three shared configuration files â
 - **THEN** `@mfe/tsconfig` has no build script because it contains only static JSON configuration files
 
 ### Requirement: @mfe/shared is a buildable package scaffold
-The `packages/shared` package SHALL be a minimal but buildable TypeScript package that compiles `src/` to `dist/` using `tsc`.
+The `packages/shared` package SHALL be a buildable TypeScript package that compiles `src/` to `dist/` using `tsc`, with `zod`, `clsx`, and `tailwind-merge` as runtime dependencies.
 
 #### Scenario: Package compiles successfully
 - **WHEN** the developer runs `turbo run build` and the build reaches `@mfe/shared`
-- **THEN** `tsc` compiles `src/index.ts` into `dist/index.js` and `dist/index.d.ts` with zero errors
+- **THEN** `tsc` compiles all files under `src/` (including `types/`, `schemas/`, `constants.ts`, `utils.ts`) into `dist/` with zero errors
 
 #### Scenario: Package exports are configured correctly
 - **WHEN** another package declares `"@mfe/shared": "workspace:*"` as a dependency
@@ -34,35 +34,17 @@ The `packages/shared` package SHALL be a minimal but buildable TypeScript packag
 - **WHEN** inspecting `packages/shared/tsconfig.json`
 - **THEN** it extends `@mfe/tsconfig/react.json` and declares `outDir: "./dist"` and `include: ["src"]`
 
-### Requirement: @mfe/store is a buildable package scaffold
-The `packages/store` package SHALL be a minimal but buildable TypeScript package with a dependency on `@mfe/shared`.
+#### Scenario: Package declares runtime dependencies
+- **WHEN** inspecting `packages/shared/package.json`
+- **THEN** it lists `"zod"`, `"clsx"`, and `"tailwind-merge"` in its `dependencies` field
 
-#### Scenario: Package compiles successfully
-- **WHEN** the developer runs `turbo run build` and the build reaches `@mfe/store`
-- **THEN** `tsc` compiles `src/index.ts` into `dist/index.js` and `dist/index.d.ts` with zero errors
+#### Scenario: Backend declares @mfe/shared as a workspace dependency
+- **WHEN** inspecting `apps/backend/package.json`
+- **THEN** it lists `"@mfe/shared": "workspace:*"` in its `dependencies` so route files can import shared schemas
 
-#### Scenario: Package declares dependency on @mfe/shared
-- **WHEN** inspecting `packages/store/package.json`
-- **THEN** it lists `"@mfe/shared": "workspace:*"` in its dependencies so the `^build` graph ensures `@mfe/shared` builds first
-
-#### Scenario: Package exports are configured correctly
-- **WHEN** another package or app imports from `@mfe/store`
-- **THEN** the import resolves through `main: "./dist/index.js"` and `types: "./dist/index.d.ts"`
-
-### Requirement: @mfe/api is a buildable package scaffold
-The `packages/api` package SHALL be a minimal but buildable TypeScript package with a dependency on `@mfe/shared`.
-
-#### Scenario: Package compiles successfully
-- **WHEN** the developer runs `turbo run build` and the build reaches `@mfe/api`
-- **THEN** `tsc` compiles `src/index.ts` into `dist/index.js` and `dist/index.d.ts` with zero errors
-
-#### Scenario: Package declares dependency on @mfe/shared
-- **WHEN** inspecting `packages/api/package.json`
-- **THEN** it lists `"@mfe/shared": "workspace:*"` in its dependencies so the `^build` graph ensures `@mfe/shared` builds first
-
-#### Scenario: Package exports are configured correctly
-- **WHEN** another package or app imports from `@mfe/api`
-- **THEN** the import resolves through `main: "./dist/index.js"` and `types: "./dist/index.d.ts"`
+#### Scenario: Backend route files import schemas from @mfe/shared
+- **WHEN** inspecting `apps/backend/src/routes/auth.ts`, `cart.ts`, and `products.ts`
+- **THEN** each imports its validation schemas from `@mfe/shared` instead of defining them inline
 
 ### Requirement: @mfe/ui is a buildable package scaffold
 The `packages/ui` package SHALL be a minimal but buildable TypeScript package that extends the React TypeScript config.
@@ -80,7 +62,7 @@ The `packages/ui` package SHALL be a minimal but buildable TypeScript package th
 - **THEN** the import resolves through `main: "./dist/index.js"` and `types: "./dist/index.d.ts"`
 
 ### Requirement: All shared packages follow consistent compilation strategy
-Every shared package (`@mfe/shared`, `@mfe/store`, `@mfe/api`, `@mfe/ui`) SHALL compile from `src/` to `dist/` using `tsc` and declare consistent `exports`, `main`, and `types` fields in their `package.json`.
+Every shared package (`@mfe/shared`, `@mfe/ui`) SHALL compile from `src/` to `dist/` using `tsc` and declare consistent `exports`, `main`, and `types` fields in their `package.json`.
 
 #### Scenario: Consistent build script across all packages
 - **WHEN** inspecting the `build` script in each shared package's `package.json`
