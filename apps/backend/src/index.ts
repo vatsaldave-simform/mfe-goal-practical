@@ -5,6 +5,7 @@ import cors from "cors";
 import authRouter from "./routes/auth";
 import productsRouter from "./routes/products";
 import cartRouter from "./routes/cart";
+import ordersRouter from "./routes/orders";
 import { auth } from "./middleware/auth";
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (_req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/cart", auth, cartRouter);
+app.use("/api/orders", auth, ordersRouter);
 
 // Error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
