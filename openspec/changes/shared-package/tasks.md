@@ -43,12 +43,12 @@
 
 > **Skills to load**: turborepo
 
-- [ ] 6.1 Refactor `apps/backend/src/routes/auth.ts` — remove inline `loginSchema` and `registerSchema`, import from `@mfe/shared`
-- [ ] 6.2 Refactor `apps/backend/src/routes/cart.ts` — remove inline `addItemSchema` and `updateItemSchema`, import `addToCartSchema` and `updateCartItemSchema` from `@mfe/shared`
-- [ ] 6.3 Refactor `apps/backend/src/routes/products.ts` — remove inline `querySchema`, import `productFilterSchema` from `@mfe/shared`
+- [x] 6.1 Refactor `apps/backend/src/routes/auth.ts` — remove inline `loginSchema` and `registerSchema`, import from `@mfe/shared`
+- [x] 6.2 Refactor `apps/backend/src/routes/cart.ts` — remove inline `addItemSchema` and `updateItemSchema`, import `addToCartSchema` and `updateCartItemSchema` from `@mfe/shared`
+- [x] 6.3 Refactor `apps/backend/src/routes/products.ts` — remove inline `querySchema`, import `productFilterSchema` from `@mfe/shared`
 
 ## 7. Verification
 
-- [ ] 7.1 Run `pnpm turbo run build --filter=@mfe/shared` and confirm zero errors
-- [ ] 7.2 Run `pnpm turbo run build --filter=@mfe/backend` and confirm zero errors (backend imports from shared successfully)
-- [ ] 7.3 Run `pnpm turbo run build` across the full workspace and confirm no regressions
+- [x] 7.1 Run `pnpm turbo run build --filter=@mfe/shared` and confirm zero errors
+- [x] 7.2 Run `pnpm turbo run build --filter=@mfe/backend` and confirm zero errors (backend imports from shared successfully)
+- [x] 7.3 Run `pnpm turbo run build` across the full workspace and confirm no regressions
