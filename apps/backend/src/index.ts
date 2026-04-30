@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRouter from "./routes/auth";
+import productsRouter from "./routes/products";
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3003;
@@ -17,6 +18,7 @@ app.get("/", (_req, res) => {
   res.json({ status: "ok" });
 });
 app.use("/api/auth", authRouter);
+app.use("/api/products", productsRouter);
 
 // Error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
