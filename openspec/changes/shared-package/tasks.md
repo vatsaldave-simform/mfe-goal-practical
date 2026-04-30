@@ -21,23 +21,23 @@
 
 > **Skills to load**: typescript-advanced-types
 
-- [ ] 3.1 Create `packages/shared/src/schemas/auth.ts` — export `loginSchema`, `registerSchema`, and inferred types `LoginInput`, `RegisterInput`
-- [ ] 3.2 Create `packages/shared/src/schemas/cart.ts` — export `addToCartSchema`, `updateCartItemSchema`, and inferred types `AddToCartInput`, `UpdateCartItemInput`
-- [ ] 3.3 Create `packages/shared/src/schemas/product.ts` — export `productFilterSchema` and inferred type `ProductFilterInput`
-- [ ] 3.4 Create `packages/shared/src/schemas/index.ts` — barrel re-export all schemas and inferred types
+- [x] 3.1 Create `packages/shared/src/schemas/auth.ts` — export `loginSchema`, `registerSchema`, and inferred types `LoginInput`, `RegisterInput`
+- [x] 3.2 Create `packages/shared/src/schemas/cart.ts` — export `addToCartSchema`, `updateCartItemSchema`, and inferred types `AddToCartInput`, `UpdateCartItemInput`
+- [x] 3.3 Create `packages/shared/src/schemas/product.ts` — export `productFilterSchema` and inferred type `ProductFilterInput`
+- [x] 3.4 Create `packages/shared/src/schemas/index.ts` — barrel re-export all schemas and inferred types
 
 ## 4. Constants & Utils
 
 > **Skills to load**: typescript-advanced-types
 
-- [ ] 4.1 Create `packages/shared/src/constants.ts` — export `API_BASE_URL`, `ROUTES` (namespaced with `as const`), `DEFAULT_PAGE_SIZE`, and `MAX_PAGE_SIZE`
-- [ ] 4.2 Create `packages/shared/src/utils.ts` — export `formatCurrency` (integer cents → formatted USD string) and `cn` (clsx + twMerge)
+- [x] 4.1 Create `packages/shared/src/constants.ts` — export `API_BASE_URL`, `ROUTES` (namespaced with `as const`), `DEFAULT_PAGE_SIZE`, and `MAX_PAGE_SIZE`
+- [x] 4.2 Create `packages/shared/src/utils.ts` — export `formatCurrency` (integer cents → formatted USD string) and `cn` (clsx + twMerge)
 
 ## 5. Barrel Export
 
 > **Skills to load**: turborepo
 
-- [ ] 5.1 Update `packages/shared/src/index.ts` — replace placeholder with re-exports from `./types`, `./schemas`, `./constants`, and `./utils`
+- [x] 5.1 Update `packages/shared/src/index.ts` — replace placeholder with re-exports from `./types`, `./schemas`, `./constants`, and `./utils`
 
 ## 6. Backend Refactor
 
