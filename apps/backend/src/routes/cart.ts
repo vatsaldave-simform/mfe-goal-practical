@@ -1,22 +1,18 @@
 import { Router, type Router as ExpressRouter } from "express";
-import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { validate } from "../middleware/validate";
 import type { Request, Response } from "express";
 import type { User } from "../../generated/prisma/client";
+import {
+  addToCartSchema,
+  updateCartItemSchema,
+  type AddToCartInput,
+  type UpdateCartItemInput,
+} from "@mfe/shared";
 
 type AuthRequest = Request & { user: User };
 
 const router: ExpressRouter = Router();
-
-const addItemSchema = z.object({
-  productId: z.string().uuid(),
-  quantity: z.number().int().min(1).default(1),
-});
-
-const updateItemSchema = z.object({
-  quantity: z.number().int().min(1),
-});
 
 // GET /api/cart
 router.get("/", async (req: Request, res: Response): Promise<void> => {
@@ -62,10 +58,10 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
 // POST /api/cart/items
 router.post(
   "/items",
-  validate(addItemSchema),
+  validate(addToCartSchema),
   async (req: Request, res: Response): Promise<void> => {
     const { id: userId } = (req as AuthRequest).user;
-    const { productId, quantity } = req.body as z.infer<typeof addItemSchema>;
+    const { productId, quantity } = req.body as AddToCartInput;
 
     const product = await prisma.product.findUnique({
       where: { id: productId },
@@ -105,11 +101,11 @@ router.post(
 // PATCH /api/cart/items/:id
 router.patch(
   "/items/:id",
-  validate(updateItemSchema),
+  validate(updateCartItemSchema),
   async (req: Request, res: Response): Promise<void> => {
     const { id: userId } = (req as AuthRequest).user;
     const { id } = req.params;
-    const { quantity } = req.body as z.infer<typeof updateItemSchema>;
+    const { quantity } = req.body as UpdateCartItemInput;
 
     // Find item scoped to the user's cart
     const item = await prisma.cartItem.findFirst({

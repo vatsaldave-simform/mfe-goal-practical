@@ -13,6 +13,7 @@
     "db:reset": "prisma migrate reset"
   },
   "dependencies": {
+    "@mfe/shared": "workspace:*",
     "@prisma/adapter-better-sqlite3": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^2.4.3",

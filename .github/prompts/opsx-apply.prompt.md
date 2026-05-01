@@ -18,9 +18,11 @@ Implement tasks from an OpenSpec change.
    Always announce: "Using change: <name>" and how to override (e.g., `/opsx:apply <other>`).
 
 2. **Check status to understand the schema**
+
    ```bash
    openspec status --change "<name>" --json
    ```
+
    Parse the JSON to understand:
    - `schemaName`: The workflow being used (e.g., "spec-driven")
    - Which artifact contains the tasks (typically "tasks" for spec-driven, check status for others)
@@ -58,6 +60,8 @@ Implement tasks from an OpenSpec change.
    - Dynamic instruction from CLI
 
 6. **Implement tasks (loop until done or blocked)**
+
+   Before starting tasks in a section, check for a `> **Skills to load**: <skill-name>` directive on that section header. If present, use the `read_file` tool to load the skill's `SKILL.md` from the skills registry in the workspace (check `.agents/skills/<skill-name>/SKILL.md` or `.github/skills/<skill-name>/SKILL.md`). Apply the guidance from that skill while implementing the tasks in that section.
 
    For each pending task:
    - Show which task is being worked on
@@ -132,6 +136,7 @@ What would you like to do?
 ```
 
 **Guardrails**
+
 - Keep going through tasks until done or blocked
 - Always read context files before starting (from the apply instructions output)
 - If task is ambiguous, pause and ask before implementing

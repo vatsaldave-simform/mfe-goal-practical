@@ -1,25 +1,19 @@
 import { Router, type Router as ExpressRouter } from "express";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { signToken } from "../lib/jwt";
 import { validate } from "../middleware/validate";
 import { auth } from "../middleware/auth";
 import type { Request, Response } from "express";
 import type { User } from "../../generated/prisma/client";
+import {
+  loginSchema,
+  registerSchema,
+  type LoginInput,
+  type RegisterInput,
+} from "@mfe/shared";
 
 const router: ExpressRouter = Router();
-
-const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1),
-});
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
 
 function setTokenCookie(res: Response, token: string) {
   res.cookie("token", token, {
@@ -39,9 +33,7 @@ router.post(
   "/register",
   validate(registerSchema),
   async (req: Request, res: Response): Promise<void> => {
-    const { email, password, name } = req.body as z.infer<
-      typeof registerSchema
-    >;
+    const { email, password, name } = req.body as RegisterInput;
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
@@ -65,7 +57,7 @@ router.post(
   "/login",
   validate(loginSchema),
   async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body as z.infer<typeof loginSchema>;
+    const { email, password } = req.body as LoginInput;
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {

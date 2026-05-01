@@ -1,24 +1,16 @@
 import { Router, type Router as ExpressRouter } from "express";
-import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import type { Request, Response } from "express";
+import { productFilterSchema } from "@mfe/shared";
 
 const router: ExpressRouter = Router();
 
-const querySchema = z.object({
-  search: z.string().optional(),
-  category: z.string().optional(),
-  sort: z.enum(["price_asc", "price_desc", "name_asc", "newest"]).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(12),
-});
-
 // GET /api/products
 router.get("/", async (req: Request, res: Response): Promise<void> => {
-  const parsed = querySchema.safeParse(req.query);
+  const parsed = productFilterSchema.safeParse(req.query);
   const { search, category, sort, page, limit } = parsed.success
     ? parsed.data
-    : querySchema.parse({});
+    : productFilterSchema.parse({});
 
   const where: NonNullable<
     Parameters<typeof prisma.product.findMany>[0]
