@@ -15,10 +15,17 @@
     "dev": "tsc --watch --project tsconfig.json"
   },
   "dependencies": {
-    "@mfe/shared": "workspace:*"
+    "@mfe/shared": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
+    "axios": "^1.7.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@mfe/tsconfig": "workspace:*",
+    "@types/react": "^18.0.0",
     "typescript": "^5.0.0"
   }
 }
