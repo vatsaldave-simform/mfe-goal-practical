@@ -15,7 +15,8 @@
     "dev": "tsc --watch --project tsconfig.json"
   },
   "dependencies": {
-    "@mfe/shared": "workspace:*"
+    "@mfe/shared": "workspace:*",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "@mfe/tsconfig": "workspace:*",
