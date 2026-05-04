@@ -2,7 +2,10 @@
   "extends": "@mfe/tsconfig/react.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "*": ["./@mf-types/*"]
+    }
   },
   "include": ["src"]
 }

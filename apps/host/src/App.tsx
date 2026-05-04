@@ -1,9 +1,11 @@
 import React from "react";
+import { ShellLayout } from "./components/shell-layout";
+import { AppRoutes } from "./routes";
 
 export default function App() {
   return (
-    <div>
-      <h1>Host App</h1>
-    </div>
+    <ShellLayout>
+      <AppRoutes />
+    </ShellLayout>
   );
 }
