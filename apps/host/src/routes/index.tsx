@@ -1,7 +1,9 @@
 import React, { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { Skeleton } from "@mfe/ui";
 import { RemoteErrorBoundary } from "../components/remote-error-boundary";
+import { AuthGuard } from "../components/auth-guard";
+import { LandingPage } from "../pages/landing";
 
 const StorefrontApp = lazy(() => import("storefront/App"));
 const AccountApp = lazy(() => import("account/App"));
@@ -20,7 +22,7 @@ function RemoteSkeleton() {
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/products" replace />} />
+      <Route path="/" element={<LandingPage />} />
 
       <Route
         path="/products/*"
@@ -58,11 +60,26 @@ export function AppRoutes() {
       <Route
         path="/account/*"
         element={
-          <RemoteErrorBoundary>
-            <Suspense fallback={<RemoteSkeleton />}>
-              <AccountApp />
-            </Suspense>
-          </RemoteErrorBoundary>
+          <AuthGuard>
+            <RemoteErrorBoundary>
+              <Suspense fallback={<RemoteSkeleton />}>
+                <AccountApp />
+              </Suspense>
+            </RemoteErrorBoundary>
+          </AuthGuard>
+        }
+      />
+
+      <Route
+        path="/orders/*"
+        element={
+          <AuthGuard>
+            <RemoteErrorBoundary>
+              <Suspense fallback={<RemoteSkeleton />}>
+                <AccountApp />
+              </Suspense>
+            </RemoteErrorBoundary>
+          </AuthGuard>
         }
       />
     </Routes>

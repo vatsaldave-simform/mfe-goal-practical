@@ -19,15 +19,23 @@ The navbar SHALL display a logo/brand element on the left side that links to the
 - **THEN** a logo element (icon + text "MFE Store") is visible on the left side and clicking it navigates to `/products`
 
 ### Requirement: Navbar displays navigation links
-The navbar SHALL display navigation links for the primary sections: "Products" (`/products`) and "Cart" (`/cart`).
+The navbar SHALL display navigation links for the primary sections: "Products" (`/products`), "Cart" (`/cart`), and conditionally "Orders" (`/orders`) when authenticated.
 
-#### Scenario: Navigation links are present
+#### Scenario: Navigation links are present for all users
 - **WHEN** the navbar renders
-- **THEN** links for "Products" and "Cart" are visible in the center/left area of the navbar
+- **THEN** links for "Products" and "Cart" are visible
+
+#### Scenario: Orders link shown when authenticated
+- **WHEN** the Zustand store's `isAuthenticated` is `true`
+- **THEN** an "Orders" navigation link to `/orders` is also visible in the navbar
+
+#### Scenario: Orders link hidden when not authenticated
+- **WHEN** the Zustand store's `isAuthenticated` is `false`
+- **THEN** no "Orders" navigation link is displayed
 
 #### Scenario: Active navigation link is visually distinct
 - **WHEN** the user is on a page that matches a nav link's path
-- **THEN** that nav link has a visually distinct style (e.g., different text color or underline) compared to inactive links
+- **THEN** that nav link has a visually distinct style (e.g., different text color) compared to inactive links
 
 ### Requirement: Navbar displays a cart icon with badge
 The navbar SHALL display a shopping cart icon on the right side with a badge showing the current item count from the Zustand store.
@@ -49,15 +57,19 @@ The navbar SHALL display a shopping cart icon on the right side with a badge sho
 - **THEN** the browser navigates to `/cart`
 
 ### Requirement: Navbar displays an account icon
-The navbar SHALL display an account/user icon on the right side that links to the account section.
+The navbar SHALL display auth-aware account controls on the right side. When the user is **not authenticated**, it SHALL show a "Login" link (with `User` icon) navigating to `/auth/login`. When the user **is authenticated**, it SHALL show a user indicator (display name or icon) and a "Logout" button.
 
-#### Scenario: Account icon is visible
-- **WHEN** the navbar renders
-- **THEN** a user icon (`User` from lucide-react) is visible on the right side of the navbar
+#### Scenario: Unauthenticated user sees Login link
+- **WHEN** the Zustand store's `isAuthenticated` is `false`
+- **THEN** the navbar shows a "Login" link (with `User` icon from lucide-react) that navigates to `/auth/login`
 
-#### Scenario: Account icon navigates to auth or account
-- **WHEN** the user clicks the account icon
-- **THEN** the browser navigates to `/auth/login` (default entry point for the account MFE)
+#### Scenario: Authenticated user sees user info and Logout
+- **WHEN** the Zustand store's `isAuthenticated` is `true` and `user` is populated
+- **THEN** the navbar shows the user's display name (or first letter) and a "Logout" button
+
+#### Scenario: Logout button clears auth state
+- **WHEN** the authenticated user clicks the "Logout" button
+- **THEN** the `useLogout` mutation from `@mfe/api` is invoked, and on success `clearAuth()` is called on the store, and the user is navigated to `/auth/login`
 
 ### Requirement: Shell layout uses semantic color tokens
 The shell layout and navbar SHALL use Tailwind CSS v4 semantic color tokens (e.g., `bg-background`, `text-foreground`, `border-border`) rather than hardcoded color values.

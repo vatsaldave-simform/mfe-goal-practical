@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import React from "react";
 import { BrowserRouter } from "react-router";
+import { ApiProvider } from "@mfe/api";
 import "./app.css";
 import App from "./App";
 
@@ -9,7 +10,9 @@ if (!container) throw new Error("Root element not found");
 
 const root = createRoot(container);
 root.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <ApiProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </ApiProvider>,
 );
