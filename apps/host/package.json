@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "lucide-react": "^0.487.0",
     "@mfe/api": "workspace:*",
     "@mfe/shared": "workspace:*",
     "@mfe/store": "workspace:*",
