@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@mfe/tsconfig": "workspace:*",
+    "@tailwindcss/postcss": "^4.0.0",
+    "tailwindcss": "^4.0.0",
     "@module-federation/rsbuild-plugin": "^2.3.3",
     "@rsbuild/core": "2.0.0-beta.2",
     "@rsbuild/plugin-react": "^1.4.5",
