@@ -2,10 +2,10 @@ export const API_BASE_URL = "http://localhost:3003";
 
 export const ROUTES = {
   AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    LOGOUT: "/auth/logout",
-    ME: "/auth/me",
+    LOGIN: "/api/auth/login",
+    REGISTER: "/api/auth/register",
+    LOGOUT: "/api/auth/logout",
+    ME: "/api/auth/me",
   },
   PRODUCTS: {
     LIST: "/api/products",

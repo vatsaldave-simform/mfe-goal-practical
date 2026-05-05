@@ -6,6 +6,7 @@ dist/
 
 # Module Federation — auto-generated remote types (downloaded at dev/build time)
 @mf-types/
+.mf/
 
 # Turborepo
 .turbo/

@@ -1,4 +1,5 @@
 import axios from "axios";
+export type { AxiosError } from "axios";
 import { API_BASE_URL, ROUTES } from "@mfe/shared";
 
 export const apiClient = axios.create({
