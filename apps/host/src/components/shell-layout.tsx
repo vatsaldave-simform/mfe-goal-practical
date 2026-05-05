@@ -7,9 +7,9 @@ interface ShellLayoutProps {
 
 export function ShellLayout({ children }: ShellLayoutProps) {
   return (
-    <div className="flex min-h-svh flex-col">
+    <div className="flex h-svh flex-col overflow-hidden">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }

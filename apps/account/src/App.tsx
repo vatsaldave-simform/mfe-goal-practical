@@ -1,9 +1,14 @@
 import React from "react";
+import { Route, Routes } from "react-router";
+import "./app.css";
+import { LoginPage, RegisterPage, ProfilePage } from "./pages";
 
 export default function App() {
   return (
-    <div>
-      <h1>Account App</h1>
-    </div>
+    <Routes>
+      <Route path="login" element={<LoginPage />} />
+      <Route path="register" element={<RegisterPage />} />
+      <Route path="profile" element={<ProfilePage />} />
+    </Routes>
   );
 }

@@ -9,12 +9,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "@mfe/api": "workspace:*",
     "@mfe/shared": "workspace:*",
     "@mfe/store": "workspace:*",
     "@mfe/ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.0",
     "react-router": "^7.0.0"
   },
   "devDependencies": {
