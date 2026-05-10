@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router";
 import { Button } from "@mfe/ui";
+import { useStore } from "@mfe/store";
 
 export function LandingPage() {
+  const isAuthenticated = useStore((s) => s.isAuthenticated);
+
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 text-center">
       <div className="flex flex-col items-center gap-6 max-w-xl">
@@ -17,9 +20,15 @@ export function LandingPage() {
           <Button asChild>
             <Link to="/products">Browse Products</Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/auth/login">Sign In</Link>
-          </Button>
+          {isAuthenticated ? (
+            <Button variant="outline" asChild>
+              <Link to="/account">My Account</Link>
+            </Button>
+          ) : (
+            <Button variant="outline" asChild>
+              <Link to="/auth/login">Sign In</Link>
+            </Button>
+          )}
         </div>
       </div>
     </main>

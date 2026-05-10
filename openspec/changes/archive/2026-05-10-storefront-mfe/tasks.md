@@ -90,14 +90,14 @@
 
 ## 10. Verification
 
-- [ ] 10.1 Run `pnpm --filter @mfe/storefront typecheck` — ensure no TypeScript errors
+- [x] 10.1 Run `pnpm --filter @mfe/storefront typecheck` — ensure no TypeScript errors
   - **Target**: `apps/storefront`
   - **Skills to load**: (none)
 
-- [ ] 10.2 Run `pnpm --filter @mfe/storefront dev` — verify standalone mode starts on port 3001, all routes render, products load from backend
+- [x] 10.2 Run `pnpm --filter @mfe/storefront dev` — verify standalone mode starts on port 3001, all routes render, products load from backend
   - **Target**: `apps/storefront`
   - **Skills to load**: (none)
 
-- [ ] 10.3 Run full `turbo run dev` — verify host at `:3000` loads storefront MFE, products browse, add to cart works, checkout creates order, badge syncs
+- [x] 10.3 Run full `turbo run dev` — verify host at `:3000` loads storefront MFE, products browse, add to cart works, checkout creates order, badge syncs
   - **Target**: root (all apps)
   - **Skills to load**: `turborepo`

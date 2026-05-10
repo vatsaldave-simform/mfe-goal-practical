@@ -10,7 +10,7 @@ export const apiClient = axios.create({
   },
 });
 
-const AUTH_EXCLUDED_URLS = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.REGISTER];
+const AUTH_EXCLUDED_URLS = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.REGISTER, ROUTES.AUTH.ME];
 
 apiClient.interceptors.response.use(
   (response) => response,

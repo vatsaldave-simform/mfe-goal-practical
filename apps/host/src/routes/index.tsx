@@ -1,9 +1,18 @@
 import React, { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { Skeleton } from "@mfe/ui";
 import { RemoteErrorBoundary } from "../components/remote-error-boundary";
 import { AuthGuard } from "../components/auth-guard";
 import { LandingPage } from "../pages/landing";
+import { useStore } from "@mfe/store";
+
+function GuestGuard({ children }: { children: React.ReactNode }) {
+  const isAuthenticated = useStore((s) => s.isAuthenticated);
+  if (isAuthenticated) {
+    return <Navigate to="/account" replace />;
+  }
+  return <>{children}</>;
+}
 
 const StorefrontApp = lazy(() => import("storefront/App"));
 const AccountApp = lazy(() => import("account/App"));
@@ -49,11 +58,13 @@ export function AppRoutes() {
       <Route
         path="/auth/*"
         element={
-          <RemoteErrorBoundary>
-            <Suspense fallback={<RemoteSkeleton />}>
-              <AccountApp />
-            </Suspense>
-          </RemoteErrorBoundary>
+          <GuestGuard>
+            <RemoteErrorBoundary>
+              <Suspense fallback={<RemoteSkeleton />}>
+                <AccountApp />
+              </Suspense>
+            </RemoteErrorBoundary>
+          </GuestGuard>
         }
       />
 
