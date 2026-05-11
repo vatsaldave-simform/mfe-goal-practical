@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "prisma generate && tsc",
+    "build": "DATABASE_URL=file:/tmp/build.db prisma generate && tsc",
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "db:migrate": "prisma migrate dev && prisma generate",
