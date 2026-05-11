@@ -12,6 +12,7 @@ export { Label } from "./components/label";
 export { Badge, badgeVariants } from "./components/badge";
 export { Separator } from "./components/separator";
 export { cn } from "./lib/utils";
+export { PageContainer } from "./components/page-container";
 
 // Form components
 export {

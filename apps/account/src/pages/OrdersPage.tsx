@@ -76,7 +76,7 @@ export function OrdersPage() {
       <h1 className="mb-6 text-2xl font-bold">Order History</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {orders.map((order) => (
-          <Link key={order.id} to={`orders/${order.id}`} className="group">
+          <Link key={order.id} to={`/orders/${order.id}`} className="group">
             <Card
               className={cn("h-full transition-shadow group-hover:shadow-md")}
             >

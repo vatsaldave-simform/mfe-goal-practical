@@ -8,7 +8,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Link to={`/${product.id}`} className="group outline-none">
+    <Link to={`/products/${product.id}`} className="group outline-none">
       <Card className="overflow-hidden gap-0 py-0 transition-shadow hover:shadow-md focus-within:ring-2 focus-within:ring-ring">
         <div className="aspect-square overflow-hidden bg-muted">
           <img

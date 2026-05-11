@@ -9,13 +9,16 @@ import { useStore } from "@mfe/store";
 function GuestGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useStore((s) => s.isAuthenticated);
   if (isAuthenticated) {
-    return <Navigate to="/account" replace />;
+    return <Navigate to="/" replace />;
   }
   return <>{children}</>;
 }
 
 const StorefrontApp = lazy(() => import("storefront/App"));
+const CartApp = lazy(() => import("storefront/CartApp"));
 const AccountApp = lazy(() => import("account/App"));
+const AccountAuthApp = lazy(() => import("account/AuthApp"));
+const AccountOrdersApp = lazy(() => import("account/OrdersApp"));
 
 function RemoteSkeleton() {
   return (
@@ -45,11 +48,11 @@ export function AppRoutes() {
       />
 
       <Route
-        path="/cart"
+        path="/cart/*"
         element={
           <RemoteErrorBoundary>
             <Suspense fallback={<RemoteSkeleton />}>
-              <StorefrontApp />
+              <CartApp />
             </Suspense>
           </RemoteErrorBoundary>
         }
@@ -61,7 +64,7 @@ export function AppRoutes() {
           <GuestGuard>
             <RemoteErrorBoundary>
               <Suspense fallback={<RemoteSkeleton />}>
-                <AccountApp />
+                <AccountAuthApp />
               </Suspense>
             </RemoteErrorBoundary>
           </GuestGuard>
@@ -87,7 +90,7 @@ export function AppRoutes() {
           <AuthGuard>
             <RemoteErrorBoundary>
               <Suspense fallback={<RemoteSkeleton />}>
-                <AccountApp />
+                <AccountOrdersApp />
               </Suspense>
             </RemoteErrorBoundary>
           </AuthGuard>

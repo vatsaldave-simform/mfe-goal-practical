@@ -64,7 +64,7 @@ export function OrderDetailPage() {
         </p>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link to="../orders">Back to Orders</Link>
+            <Link to="/orders">Back to Orders</Link>
           </Button>
           {status !== 404 && (
             <Button variant="outline" onClick={() => refetch()}>
@@ -80,7 +80,7 @@ export function OrderDetailPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="../orders">← Back to Orders</Link>
+          <Link to="/orders">← Back to Orders</Link>
         </Button>
       </div>
 

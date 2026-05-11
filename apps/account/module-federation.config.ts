@@ -4,6 +4,8 @@ export default createModuleFederationConfig({
   name: "account",
   exposes: {
     "./App": "./src/App.tsx",
+    "./AuthApp": "./src/AuthApp.tsx",
+    "./OrdersApp": "./src/OrdersApp.tsx",
   },
   shareStrategy: "loaded-first",
   shared: {

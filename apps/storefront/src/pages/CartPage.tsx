@@ -122,7 +122,7 @@ export default function CartPage() {
         </div>
         <Button
           className="w-full"
-          onClick={() => navigate("/checkout")}
+          onClick={() => navigate("/cart/checkout")}
           disabled={isUpdating}
         >
           Proceed to Checkout

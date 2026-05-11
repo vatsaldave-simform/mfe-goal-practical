@@ -12,8 +12,6 @@ export default function App() {
     <Routes>
       <Route index element={<ProductListPage />} />
       <Route path=":id" element={<ProductDetailPage />} />
-      <Route path="cart" element={<CartPage />} />
-      <Route path="checkout" element={<CheckoutPage />} />
     </Routes>
   );
 }
