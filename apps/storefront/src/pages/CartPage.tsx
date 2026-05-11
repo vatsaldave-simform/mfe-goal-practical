@@ -1,13 +1,11 @@
 import { useNavigate } from "react-router";
 import { useCart, useUpdateCartItem, useRemoveCartItem } from "@mfe/api";
-import { Button, Separator, Skeleton } from "@mfe/ui";
+import { Button, Separator, Skeleton, toast } from "@mfe/ui";
 import { formatCurrency } from "@mfe/shared";
 import { CartItemRow } from "../components/CartItemRow";
-import { useCartSync } from "../hooks/useCartSync";
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const { syncCartCount } = useCartSync();
 
   const { data: cart, isPending, isError } = useCart();
   const updateItem = useUpdateCartItem();
@@ -18,29 +16,19 @@ export default function CartPage() {
   function handleIncrease(id: string) {
     const item = cart?.items.find((i) => i.id === id);
     if (!item) return;
-    updateItem.mutate(
-      { id, quantity: item.quantity + 1 },
-      { onSuccess: (updated) => syncCartCount(updated.itemCount) },
-    );
+    updateItem.mutate({ id, quantity: item.quantity + 1 });
   }
 
   function handleDecrease(id: string) {
     const item = cart?.items.find((i) => i.id === id);
     if (!item || item.quantity <= 1) return;
-    updateItem.mutate(
-      { id, quantity: item.quantity - 1 },
-      { onSuccess: (updated) => syncCartCount(updated.itemCount) },
-    );
+    updateItem.mutate({ id, quantity: item.quantity - 1 });
   }
 
   function handleRemove(id: string) {
-    const removedQty = cart?.items.find((i) => i.id === id)?.quantity ?? 1;
     removeItem.mutate(id, {
-      onSuccess: () => {
-        syncCartCount(
-          Math.max(0, (cart?.itemCount ?? removedQty) - removedQty),
-        );
-      },
+      onSuccess: () => toast.success("Item removed"),
+      onError: () => toast.error("Failed to remove item"),
     });
   }
 
@@ -90,22 +78,25 @@ export default function CartPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
       {/* Item list */}
-      <div className="flex flex-col">
+      <div className="flex flex-col p-6">
         <h1 className="text-2xl font-bold mb-2">Your Cart</h1>
         <p className="text-muted-foreground text-sm mb-4">
           {cart.itemCount} {cart.itemCount === 1 ? "item" : "items"}
         </p>
 
-        <div className="divide-y">
-          {cart.items.map((item) => (
-            <CartItemRow
-              key={item.id}
-              item={item}
-              onIncrease={handleIncrease}
-              onDecrease={handleDecrease}
-              onRemove={handleRemove}
-              isUpdating={isUpdating}
-            />
+        <div className="flex flex-col">
+          {cart.items.map((item, index) => (
+            <>
+              {index > 0 && <Separator key={`sep-${item.id}`} />}
+              <CartItemRow
+                key={item.id}
+                item={item}
+                onIncrease={handleIncrease}
+                onDecrease={handleDecrease}
+                onRemove={handleRemove}
+                isUpdating={isUpdating}
+              />
+            </>
           ))}
         </div>
       </div>

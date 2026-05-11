@@ -77,10 +77,10 @@ export function OrderDetailPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="flex flex-col gap-6 p-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/orders">← Back to Orders</Link>
+          <Link to="/orders">Back to Orders</Link>
         </Button>
       </div>
 

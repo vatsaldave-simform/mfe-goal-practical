@@ -10,7 +10,11 @@ export const apiClient = axios.create({
   },
 });
 
-const AUTH_EXCLUDED_URLS = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.REGISTER, ROUTES.AUTH.ME];
+const AUTH_EXCLUDED_URLS = [
+  ROUTES.AUTH.LOGIN,
+  ROUTES.AUTH.REGISTER,
+  ROUTES.AUTH.ME,
+];
 
 apiClient.interceptors.response.use(
   (response) => response,
@@ -22,7 +26,7 @@ apiClient.interceptors.response.use(
     );
 
     if (is401 && !isExcluded) {
-      window.location.href = "/login";
+      window.location.href = "/auth/login";
       return Promise.reject(error);
     }
 

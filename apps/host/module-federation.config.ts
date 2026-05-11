@@ -14,5 +14,6 @@ export default createModuleFederationConfig({
     zustand: { singleton: true, requiredVersion: "^5.0.0" },
     "@mfe/store": { singleton: true, requiredVersion: "workspace:*" },
     "@mfe/api": { singleton: true, requiredVersion: "workspace:*" },
+    sonner: { singleton: true, requiredVersion: "^2.0.0" },
   },
 });

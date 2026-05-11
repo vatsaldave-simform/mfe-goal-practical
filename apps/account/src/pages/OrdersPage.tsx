@@ -72,7 +72,7 @@ export function OrdersPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="flex flex-col gap-6 p-6">
       <h1 className="mb-6 text-2xl font-bold">Order History</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {orders.map((order) => (

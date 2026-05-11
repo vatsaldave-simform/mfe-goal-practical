@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useCart, useCreateOrder } from "@mfe/api";
-import { Alert, AlertDescription, AlertTitle, Button, Skeleton } from "@mfe/ui";
+import { Button, Skeleton, toast } from "@mfe/ui";
 import { OrderSummary } from "../components/OrderSummary";
 import { useCartSync } from "../hooks/useCartSync";
 
@@ -15,10 +15,15 @@ export default function CheckoutPage() {
   function handlePlaceOrder() {
     createOrder.mutate(undefined, {
       onSuccess: () => {
+        toast.success("Order placed!");
         // Cart is cleared after order creation
         syncCartCount(0);
-        navigate("/", { replace: true });
+        navigate("/orders", { replace: true });
       },
+      onError: (err) =>
+        toast.error(
+          (err as Error)?.message ?? "Something went wrong. Please try again.",
+        ),
     });
   }
 
@@ -43,23 +48,13 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto flex flex-col gap-6">
+    <div className="max-w-md mx-auto flex flex-col gap-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">Checkout</h1>
         <p className="text-muted-foreground text-sm mt-1">
           Review your order before placing it.
         </p>
       </div>
-
-      {createOrder.isError && (
-        <Alert variant="destructive">
-          <AlertTitle>Order failed</AlertTitle>
-          <AlertDescription>
-            {(createOrder.error as Error)?.message ??
-              "Something went wrong. Please try again."}
-          </AlertDescription>
-        </Alert>
-      )}
 
       <OrderSummary
         cart={cart}

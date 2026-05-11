@@ -6,8 +6,6 @@ import { loginSchema, type LoginInput } from "@mfe/shared";
 import { useLogin, type AxiosError } from "@mfe/api";
 import { useStore } from "@mfe/store";
 import {
-  Alert,
-  AlertDescription,
   Button,
   Card,
   CardContent,
@@ -18,12 +16,13 @@ import {
   FieldGroup,
   FieldLabel,
   Input,
+  toast,
 } from "@mfe/ui";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useStore((s) => s.setAuth);
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   const {
     register,
@@ -38,6 +37,12 @@ export function LoginPage() {
       onSuccess: (res) => {
         setAuth(res.user);
         navigate("/");
+      },
+      onError: (err) => {
+        const message =
+          (err as AxiosError<{ error: string }>)?.response?.data?.error ??
+          "Something went wrong. Please try again.";
+        toast.error(message);
       },
     });
   };
@@ -54,15 +59,6 @@ export function LoginPage() {
             noValidate
             className="space-y-4"
           >
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  {(error as AxiosError<{ error: string }>)?.response?.data
-                    ?.error ?? "Something went wrong. Please try again."}
-                </AlertDescription>
-              </Alert>
-            )}
-
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>

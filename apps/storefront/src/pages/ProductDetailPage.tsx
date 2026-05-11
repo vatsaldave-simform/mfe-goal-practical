@@ -1,33 +1,59 @@
 import { useParams, useNavigate } from "react-router";
-import { useProduct, useAddToCart } from "@mfe/api";
-import { Button, Badge, Skeleton } from "@mfe/ui";
+import {
+  useProduct,
+  useAddToCart,
+  useCart,
+  useUpdateCartItem,
+  useRemoveCartItem,
+} from "@mfe/api";
+import { Button, Badge, Skeleton, toast } from "@mfe/ui";
 import { formatCurrency } from "@mfe/shared";
-import { useCartSync } from "../hooks/useCartSync";
+import { QuantityControl } from "../components/QuantityControl";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { syncCartCount } = useCartSync();
 
   const { data: product, isPending, isError, error } = useProduct(id!);
+  const { data: cart } = useCart();
   const addToCart = useAddToCart();
+  const updateCartItem = useUpdateCartItem();
+  const removeCartItem = useRemoveCartItem();
+
+  const cartItem = cart?.items.find((item) => item.productId === id);
 
   function handleAddToCart() {
     if (!id) return;
     addToCart.mutate(
       { productId: id, quantity: 1 },
       {
-        onSuccess: (cart) => {
-          syncCartCount(cart.itemCount);
-        },
+        onSuccess: () => toast.success("Added to cart"),
+        onError: () => toast.error("Failed to add to cart"),
       },
     );
   }
 
+  function handleIncrement() {
+    if (!cartItem) return;
+    updateCartItem.mutate({ id: cartItem.id, quantity: cartItem.quantity + 1 });
+  }
+
+  function handleDecrement() {
+    if (!cartItem) return;
+    if (cartItem.quantity === 1) {
+      removeCartItem.mutate(cartItem.id);
+    } else {
+      updateCartItem.mutate({
+        id: cartItem.id,
+        quantity: cartItem.quantity - 1,
+      });
+    }
+  }
+
   if (isPending) {
     return (
-      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
-        <Skeleton className="aspect-square w-full rounded-xl md:max-w-sm" />
+      <div className="flex flex-col gap-6 md:flex-row md:gap-10 p-6">
+        <Skeleton className="h-72 w-full rounded-xl md:max-w-xs" />
         <div className="flex flex-1 flex-col gap-4">
           <Skeleton className="h-8 w-3/4 rounded" />
           <Skeleton className="h-5 w-24 rounded-full" />
@@ -55,13 +81,16 @@ export default function ProductDetailPage() {
 
   if (!product) return null;
 
+  const isMutating =
+    addToCart.isPending || updateCartItem.isPending || removeCartItem.isPending;
+
   return (
-    <div className="flex flex-col gap-6 md:flex-row md:gap-10">
-      <div className="overflow-hidden rounded-xl bg-muted md:max-w-sm">
+    <div className="flex flex-col gap-6 md:flex-row md:gap-10 p-4">
+      <div className="overflow-hidden rounded-xl bg-muted md:max-w-xs">
         <img
           src={product.image}
           alt={product.name}
-          className="aspect-square w-full object-cover"
+          className="h-72 object-contain md:h-80"
         />
       </div>
 
@@ -88,25 +117,37 @@ export default function ProductDetailPage() {
           )}
         </p>
 
-        <div className="flex gap-3 pt-2">
-          <Button
-            onClick={handleAddToCart}
-            disabled={addToCart.isPending || product.stock === 0}
-          >
-            {addToCart.isPending ? "Adding…" : "Add to Cart"}
-          </Button>
+        <div className="flex items-center gap-3 pt-2">
+          {cartItem ? (
+            <QuantityControl
+              quantity={cartItem.quantity}
+              onDecrease={handleDecrement}
+              onIncrease={handleIncrement}
+              disabled={isMutating}
+              disableIncrease={cartItem.quantity >= product.stock}
+            />
+          ) : (
+            <Button
+              onClick={handleAddToCart}
+              disabled={isMutating || product.stock === 0}
+            >
+              {addToCart.isPending ? "Adding…" : "Add to Cart"}
+            </Button>
+          )}
           <Button variant="outline" onClick={() => navigate(-1)}>
             Back
           </Button>
         </div>
 
-        {addToCart.isError && (
+        {(addToCart.isError ||
+          updateCartItem.isError ||
+          removeCartItem.isError) && (
           <p className="text-sm text-destructive">
-            {addToCart.error?.message ?? "Failed to add to cart"}
+            {addToCart.error?.message ??
+              updateCartItem.error?.message ??
+              removeCartItem.error?.message ??
+              "Something went wrong"}
           </p>
-        )}
-        {addToCart.isSuccess && (
-          <p className="text-sm text-green-600">Added to cart!</p>
         )}
       </div>
     </div>

@@ -1,19 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useMe } from "@mfe/api";
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   Separator,
   Spinner,
+  toast,
 } from "@mfe/ui";
 
 export function ProfilePage() {
   const { data, isLoading, isError, error } = useMe();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error((error as Error)?.message ?? "Failed to load profile.");
+    }
+  }, [isError, error]);
 
   if (isLoading) {
     return (
@@ -23,18 +27,7 @@ export function ProfilePage() {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="flex min-h-full items-center justify-center p-4">
-        <Alert variant="destructive" className="max-w-sm">
-          <AlertTitle>Failed to load profile</AlertTitle>
-          <AlertDescription>
-            {(error as Error).message ?? "An unexpected error occurred."}
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+  if (isError) return null;
 
   const user = data!.user;
 

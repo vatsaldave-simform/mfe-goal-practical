@@ -6,8 +6,6 @@ import { registerSchema, type RegisterInput } from "@mfe/shared";
 import { useRegister, type AxiosError } from "@mfe/api";
 import { useStore } from "@mfe/store";
 import {
-  Alert,
-  AlertDescription,
   Button,
   Card,
   CardContent,
@@ -18,12 +16,13 @@ import {
   FieldGroup,
   FieldLabel,
   Input,
+  toast,
 } from "@mfe/ui";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const setAuth = useStore((s) => s.setAuth);
-  const { mutate: register_, isPending, error } = useRegister();
+  const { mutate: register_, isPending } = useRegister();
 
   const {
     register,
@@ -36,8 +35,15 @@ export function RegisterPage() {
   const onSubmit = (data: RegisterInput) => {
     register_(data, {
       onSuccess: (res) => {
+        toast.success("Account created!");
         setAuth(res.user);
         navigate("/");
+      },
+      onError: (err) => {
+        const message =
+          (err as AxiosError<{ error: string }>)?.response?.data?.error ??
+          "Something went wrong. Please try again.";
+        toast.error(message);
       },
     });
   };
@@ -54,15 +60,6 @@ export function RegisterPage() {
             noValidate
             className="space-y-4"
           >
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>
-                  {(error as AxiosError<{ error: string }>)?.response?.data
-                    ?.error ?? "Something went wrong. Please try again."}
-                </AlertDescription>
-              </Alert>
-            )}
-
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="name">Name</FieldLabel>

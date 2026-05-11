@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Link, useNavigate } from "react-router";
 import { Package, ShoppingCart, User } from "lucide-react";
-import { Badge, Button, cn } from "@mfe/ui";
+import { Badge, Button, cn, toast } from "@mfe/ui";
 import { useStore } from "@mfe/store";
 import { useLogout } from "@mfe/api";
 
@@ -17,6 +17,7 @@ export function Navbar() {
   function handleLogout() {
     logout.mutate(undefined, {
       onSuccess: () => {
+        toast.success("Logged out");
         clearAuth();
         navigate("/auth/login");
       },
@@ -48,17 +49,7 @@ export function Navbar() {
           >
             Products
           </NavLink>
-          <NavLink
-            to="/cart"
-            className={({ isActive }) =>
-              cn(
-                "text-sm font-medium transition-colors hover:text-foreground",
-                isActive ? "text-foreground" : "text-muted-foreground",
-              )
-            }
-          >
-            Cart
-          </NavLink>
+
           {isAuthenticated && (
             <NavLink
               to="/orders"

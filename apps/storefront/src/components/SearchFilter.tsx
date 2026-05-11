@@ -40,7 +40,8 @@ export function SearchFilter() {
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [inputValue, setSearchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue]);
 
   const category = searchParams.get("category") ?? ALL_CATEGORIES;
 
