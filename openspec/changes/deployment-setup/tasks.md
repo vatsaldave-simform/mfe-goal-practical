@@ -24,9 +24,9 @@
 
 ## 4. Production Build Verification
 
-- [ ] 4.1 Run production build — Execute `turbo run build` and verify all 3 frontend apps and backend build successfully. Check that `packages/shared/dist/src/constants.js` contains the `process.env.PUBLIC_API_URL` reference (not replaced at tsc time). **Target**: all apps.
+- [x] 4.1 Run production build — Execute `turbo run build` and verify all 3 frontend apps and backend build successfully. Check that `packages/shared/dist/src/constants.js` contains the `process.env.PUBLIC_API_URL` reference (not replaced at tsc time). **Target**: all apps.
 
-- [ ] 4.2 Verify host dist output — Inspect `apps/host/dist/mf-manifest.json` to confirm it was generated. Check that the build completes without MF errors. **Target**: `@mfe/host`.
+- [x] 4.2 Verify host dist output — Inspect `apps/host/dist/mf-manifest.json` to confirm it was generated. Check that the build completes without MF errors. **Target**: `@mfe/host`.
 
 ## 5. Platform Deployment (Manual Steps)
 
