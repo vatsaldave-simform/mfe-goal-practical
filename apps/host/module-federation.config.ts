@@ -1,10 +1,13 @@
 import { createModuleFederationConfig } from "@module-federation/rsbuild-plugin";
 
+const storefrontUrl = process.env.STOREFRONT_URL || "http://localhost:3001";
+const accountUrl = process.env.ACCOUNT_URL || "http://localhost:3002";
+
 export default createModuleFederationConfig({
   name: "host",
   remotes: {
-    storefront: "storefront@http://localhost:3001/mf-manifest.json",
-    account: "account@http://localhost:3002/mf-manifest.json",
+    storefront: `storefront@${storefrontUrl}/mf-manifest.json`,
+    account: `account@${accountUrl}/mf-manifest.json`,
   },
   shareStrategy: "loaded-first",
   shared: {

@@ -5,6 +5,13 @@ import moduleFederationConfig from "./module-federation.config";
 
 export default defineConfig({
   plugins: [pluginReact(), pluginModuleFederation(moduleFederationConfig)],
+  source: {
+    define: {
+      "process.env.PUBLIC_API_URL": JSON.stringify(
+        process.env.PUBLIC_API_URL || "http://localhost:3003",
+      ),
+    },
+  },
   server: {
     port: 3000,
   },

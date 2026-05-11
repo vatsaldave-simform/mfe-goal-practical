@@ -13,7 +13,15 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3003;
 
 // Middleware pipeline
 app.use(cookieParser());
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+  : null;
+app.use(
+  cors({
+    origin: allowedOrigins ?? true,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // Routes
