@@ -2,7 +2,12 @@ import { createModuleFederationConfig } from "@module-federation/rsbuild-plugin"
 
 const storefrontUrl = process.env.STOREFRONT_URL || "http://localhost:3001";
 const accountUrl = process.env.ACCOUNT_URL || "http://localhost:3002";
-
+console.log(
+  "[MF Config] storefrontUrl:",
+  storefrontUrl,
+  "accountUrl:",
+  accountUrl,
+);
 export default createModuleFederationConfig({
   name: "host",
   remotes: {

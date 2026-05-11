@@ -10,6 +10,12 @@ export default defineConfig({
       "process.env.PUBLIC_API_URL": JSON.stringify(
         process.env.PUBLIC_API_URL || "http://localhost:3003",
       ),
+      "process.env.STOREFRONT_URL": JSON.stringify(
+        process.env.STOREFRONT_URL || "http://localhost:3001",
+      ),
+      "process.env.ACCOUNT_URL": JSON.stringify(
+        process.env.ACCOUNT_URL || "http://localhost:3002",
+      ),
     },
   },
   server: {
