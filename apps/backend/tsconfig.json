@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "module": "CommonJS",
+    "moduleResolution": "node"
   },
   "include": ["src", "lib", "generated"]
 }
