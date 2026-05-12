@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  process.env.PUBLIC_API_URL || "http://localhost:3003";
+  process.env.PUBLIC_API_URL ?? "";
 
 export const ROUTES = {
   AUTH: {

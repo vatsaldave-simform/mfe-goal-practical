@@ -8,7 +8,7 @@ export default defineConfig({
   source: {
     define: {
       "process.env.PUBLIC_API_URL": JSON.stringify(
-        process.env.PUBLIC_API_URL || "http://localhost:3003",
+        process.env.PUBLIC_API_URL ?? "",
       ),
     },
   },
