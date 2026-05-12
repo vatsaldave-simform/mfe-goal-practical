@@ -10,7 +10,7 @@ if (!container) throw new Error("Root element not found");
 
 const root = createRoot(container);
 root.render(
-  <BrowserRouter basename="/account">
+  <BrowserRouter>
     <ApiProvider>
       <App />
     </ApiProvider>

@@ -1,17 +1,14 @@
 import React from "react";
 import { Route, Routes } from "react-router";
-import {
-  ProductListPage,
-  ProductDetailPage,
-  CartPage,
-  CheckoutPage,
-} from "./pages";
+import { ProductListPage, ProductDetailPage, CartPage } from "./pages";
+import ProductApp from "./ProductApp";
+import CartApp from "./CartApp";
 
 export default function App() {
   return (
     <Routes>
-      <Route index element={<ProductListPage />} />
-      <Route path=":id" element={<ProductDetailPage />} />
+      <Route path="/products/*" element={<ProductApp />} />
+      <Route path="/cart/*" element={<CartApp />} />
     </Routes>
   );
 }

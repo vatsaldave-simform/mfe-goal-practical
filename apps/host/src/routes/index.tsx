@@ -14,7 +14,7 @@ function GuestGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-const StorefrontApp = lazy(() => import("storefront/App"));
+const StorefrontApp = lazy(() => import("storefront/ProductApp"));
 const CartApp = lazy(() => import("storefront/CartApp"));
 const AccountApp = lazy(() => import("account/App"));
 const AccountAuthApp = lazy(() => import("account/AuthApp"));

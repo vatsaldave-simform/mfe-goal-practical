@@ -5,6 +5,7 @@ export default createModuleFederationConfig({
   exposes: {
     "./App": "./src/App.tsx",
     "./CartApp": "./src/CartApp.tsx",
+    "./ProductApp": "./src/ProductApp.tsx",
   },
   shareStrategy: "loaded-first",
   shared: {
