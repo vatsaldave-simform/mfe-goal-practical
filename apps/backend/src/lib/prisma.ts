@@ -1,9 +1,13 @@
 import "dotenv/config";
 import { PrismaClient } from "../../generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = `${process.env.DATABASE_URL}`;
-const adapter = new PrismaBetterSqlite3({ url: connectionString });
+const connectionString = process.env.DATABASE_URL!;
+// Neon databases suspend after inactivity; allow up to 10s for cold-start wake-up.
+const adapter = new PrismaPg({
+  connectionString,
+  connectionTimeoutMillis: 10_000,
+});
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
