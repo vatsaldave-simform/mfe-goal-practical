@@ -12,7 +12,8 @@
         "ALLOWED_ORIGINS",
         "DATABASE_URL",
         "JWT_SECRET",
-        "PORT"
+        "PORT",
+        "ASSET_PREFIX"
       ]
     },
     "dev": {
